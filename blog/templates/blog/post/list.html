@@ -13,4 +13,9 @@
 	  </p>
 	  {{ post.body|truncatewords:30|linebreaks }}
 	{% endfor %}
+<!--*基于函数的分页
+{% include "pagination.html" with page=posts %}
+
+基于类的分页。ListView 会传递当前页的变量page_obj -->
+{% include "pagination.html" with page=page_obj %}
 {% endblock %}
