@@ -25,7 +25,7 @@ SECRET_KEY = '++!5yf7)spc^_li@%dii0vta!-moitx0m%)62f%jl5)*3s#%eu'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*']  #允许所有主机访问，不推荐。默认为[]只允许本机访问。
 
 
 # Application definition
@@ -119,3 +119,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Email settings
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'banananer@qq.com'
+EMAIL_HOST_PASSWORD = 'wyqsjcmlaszlbcch'
+EMAIL_USE_TLS =True
+#EMAIL_USE_SSL = False
+#EMAIL_SSL_CERTFILE = None
+#EMAIL_SSL_KEYFILE = None
+#DEFAULT_TIMEOUT = None
+#DEFAULT_FROM_EMAIL = 'banananer@qq.com'
