@@ -1,13 +1,27 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import Post, Comment
-from .forms import EmailPostForm, CommentForm
+from .forms import EmailPostForm, CommentForm, SearchForm
 from django.views.generic import ListView
 from django.core.mail import send_mail
 from taggit.models import Tag
 from django.db.models import Count
+from django.contrib.postgres.search import SearchVector
 
 # 自定义函数  自己定义所有内容并处理异常
+def post_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            results = Post.objects.annotate(search=SearchVector('title', 'slug', 'body'),).filter(search=query)
+    return render(request, 'blog/post/search.html', {'query': query, "form": form, 'results': results})
+
+
+
 def post_list(request, tag_slug=None):
     object_list = Post.published.all()
     tag = None
