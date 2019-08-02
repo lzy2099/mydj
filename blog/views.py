@@ -6,8 +6,8 @@ from django.views.generic import ListView
 from django.core.mail import send_mail
 from taggit.models import Tag
 from django.db.models import Count
-from django.contrib.postgres.search import SearchVector
-
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.contrib.postgres.search import TrigramSimilarity
 # 自定义函数  自己定义所有内容并处理异常
 def post_search(request):
     form = SearchForm()
@@ -17,7 +17,10 @@ def post_search(request):
         form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            results = Post.objects.annotate(search=SearchVector('title', 'slug', 'body'),).filter(search=query)
+            search_vector = SearchVector('title',weight='A') + SearchVector('body', weight='B')
+            search_query = SearchQuery(query)
+            results = Post.objects.annotate(similarity=TrigramSimilarity('title', query),).filter(similarity__gte=0.1).order_by('-similarity')
+#            results = Post.objects.annotate(search=search_vector, rank=SearchRank(search_vector, search_query)).filter(rank__gte=0.3).order_by('-rank')
     return render(request, 'blog/post/search.html', {'query': query, "form": form, 'results': results})
 
 
